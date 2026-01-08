@@ -22,3 +22,6 @@ Route::middleware('auth:sanctum')->prefix('auth')->group(function () {
 Route::group(['middleware' => 'auth:sanctum'], function () {
     Route::post('pay', [PaymentController::class, 'pay']);
 });
+
+Route::post('handle-provider-a-webhook', [PaymentController::class, 'handleProviderAWebhook']);
+Route::post('handle-provider-b-webhook', [PaymentController::class, 'handleProviderBWebhook']);

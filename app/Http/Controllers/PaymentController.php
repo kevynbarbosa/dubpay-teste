@@ -3,8 +3,11 @@
 namespace App\Http\Controllers;
 
 use App\Http\Requests\PayRequest;
+use App\Http\Requests\ProviderAWebhookRequest;
+use App\Http\Requests\ProviderBWebhookRequest;
 use App\Services\Payment\PaymentService;
-use Illuminate\Http\Request;
+use App\Actions\PaymentProvider\ProviderAWebhookAction;
+use App\Actions\PaymentProvider\ProviderBWebhookAction;
 
 class PaymentController extends Controller
 {
@@ -24,12 +27,26 @@ class PaymentController extends Controller
         }
     }
 
-    public function handleProviderWebhook(Request $request)
+    public function handleProviderAWebhook(ProviderAWebhookRequest $request)
     {
-        // Lógica para lidar com webhooks dos provedores de pagamento
         try {
-            //code...
+            $data = $request->validated();
+
+            (new ProviderAWebhookAction())->execute($data);
         } catch (\Throwable $th) {
+            throw $th;
+            return response()->json(['error' => 'Error processing webhook'], 500);
+        }
+    }
+
+    public function handleProviderBWebhook(ProviderBWebhookRequest $request)
+    {
+        try {
+            $data = $request->validated();
+
+            (new ProviderBWebhookAction())->execute($data);
+        } catch (\Throwable $th) {
+            throw $th;
             return response()->json(['error' => 'Error processing webhook'], 500);
         }
     }

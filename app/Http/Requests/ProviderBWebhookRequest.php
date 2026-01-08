@@ -4,7 +4,7 @@ namespace App\Http\Requests;
 
 use Illuminate\Foundation\Http\FormRequest;
 
-class PayRequest extends FormRequest
+class ProviderBWebhookRequest extends FormRequest
 {
     /**
      * Determine if the user is authorized to make this request.
@@ -22,10 +22,8 @@ class PayRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'order_id' => ['required', 'numeric'],
-            'amount' => ['required', 'numeric', 'min:0.01'],
-            'currency' => ['required', 'string', 'size:3'],
-            'provider' => ['required', 'string', 'in:ProviderA,ProviderB'],
+            'transaction_id' => ['required', 'string'],
+            'message' => ['required', 'string'],
         ];
     }
 }

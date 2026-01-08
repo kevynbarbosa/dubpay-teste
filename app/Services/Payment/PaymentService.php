@@ -25,14 +25,19 @@ class PaymentService
 
     public function createTransaction(array $data): ProviderPaymentResponseDTO
     {
+        if (Transaction::where('order_id', $data['order_id'])->exists()) {
+            throw new \Exception('Transaction already exists for this order');
+        }
+
         $this->setProvider($data['provider']);
 
         try {
             $transaction = Transaction::create([
+                'order_id' => $data['order_id'],
                 'amount' => $data['amount'],
                 'currency' => $data['currency'],
                 'provider' => $data['provider'],
-                'status' => TransactionStatusEnum::PENDING,
+                'status' => TransactionStatusEnum::CREATED,
             ]);
         } catch (\Throwable $th) {
             throw new \Exception('Failed to create transaction: ' . $th->getMessage());

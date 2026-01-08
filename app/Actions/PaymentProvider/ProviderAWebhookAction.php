@@ -1,11 +1,22 @@
 <?php
 
-namespace App\Services\Payment;
+namespace App\Actions\PaymentProvider;
+
+use App\Models\Transaction;
 
 class ProviderAWebhookAction
 {
-    public function execute(array $payload): void
+    public function execute(array $data): void
     {
-        // Process the webhook payload from PaymentProviderA
+        try {
+            $status = $data['status'];
+            $transactionId = $data['transaction_id'];
+
+            Transaction::find($transactionId)->update([
+                'status' => $status,
+            ]);
+        } catch (\Throwable $th) {
+            throw $th;
+        }
     }
 }
