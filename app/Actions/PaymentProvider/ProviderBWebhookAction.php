@@ -4,6 +4,7 @@ namespace App\Actions\PaymentProvider;
 
 use App\Models\Transaction;
 use App\Models\WebhookEvent;
+use Illuminate\Support\Facades\Log;
 
 class ProviderBWebhookAction
 {
@@ -47,6 +48,14 @@ class ProviderBWebhookAction
                 'payload' => $data,
             ]);
         } catch (\Throwable $th) {
+            Log::error('ProviderB webhook processing failed.', [
+                'provider' => 'ProviderB',
+                'transaction_id' => $data['transaction_id'] ?? null,
+                'date_created' => $data['date_created'] ?? null,
+                'payload_hash' => $payloadHash ?? null,
+                'exception' => $th,
+            ]);
+
             throw $th;
         }
     }
