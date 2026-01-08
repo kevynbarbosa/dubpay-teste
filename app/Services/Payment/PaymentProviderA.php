@@ -2,6 +2,10 @@
 
 namespace App\Services\Payment;
 
+use App\DTO\ProviderPaymentPayloadDTO;
+use App\DTO\ProviderPaymentResponseDTO;
+use App\Exceptions\ProviderAAuthException;
+use App\Models\LogTransaction;
 use Exception;
 use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\Http;
@@ -10,10 +14,12 @@ class PaymentProviderA implements PaymentProviderInterface
 {
     private string $apiKey;
     private string $authToken;
+    private string $baseUrl;
 
     public function __construct()
     {
-        $this->apiKey = config('services.payment_provider_a.api_key');
+        $this->baseUrl = config('services.provider_a.base_url');
+        $this->apiKey = config('services.provider_a.api_key');
 
         $this->auth();
     }
@@ -22,28 +28,52 @@ class PaymentProviderA implements PaymentProviderInterface
     {
         if (Cache::has('payment_provider_a_token')) {
             $this->authToken = Cache::get('payment_provider_a_token');
+            return;
         }
 
         try {
-            $response = Http::fake([
-                'https://api.providerA.com/*' => Http::response(['token' => md5(time())], 200),
+            $response = Http::post($this->baseUrl . '/auth', [
+                'api_key' => $this->apiKey,
             ]);
 
-            $response->throwUnlessSuccessful();
+            $response->throwUnlessStatus(200);
 
-            Cache::put('payment_provider_a_token', $response->json('token'));
+            $this->authToken = $response->json('auth_token');
 
-            $this->authToken = $response->json('token');
+            Cache::put('payment_provider_a_token', $this->authToken);
         } catch (\Throwable $th) {
-            throw new Exception('Failed to authenticate with Payment Provider A');
+            throw new ProviderAAuthException($th->getMessage());
         }
     }
 
-    public function makeTransaction(array $data): ProviderPaymentResponseDTO
+    public function requestPayment(ProviderPaymentPayloadDTO $dto): ProviderPaymentResponseDTO
     {
-        return ProviderPaymentResponseDTO::fromArray([
-            'status' => 200,
-            'id_transacao' => uniqid('provA_'),
-        ]);
+        try {
+            $payload = [
+                'transaction_id' => $dto->transactionId,
+                'amount' => $dto->amount,
+            ];
+
+            $response = Http::withToken($this->authToken)->post($this->baseUrl . '/payments', $payload);
+
+            LogTransaction::create([
+                'url' => $this->baseUrl . '/payments',
+                'transaction_id' => $dto->transactionId,
+                'provider' => 'ProviderA',
+                'payload' => json_encode($payload),
+                'response_data' => $response->body(),
+            ]);
+
+            $response->throwUnlessStatus(200);
+
+            $responseData = $response->json();
+
+            return ProviderPaymentResponseDTO::fromArray([
+                'paymentId' => $responseData['payment_id'],
+                'status' => $response->status(),
+            ]);
+        } catch (\Throwable $th) {
+            throw new Exception('Payment request failed: ' . $th->getMessage());
+        }
     }
 }

@@ -1,7 +1,7 @@
 <?php
 
 use App\Http\Controllers\AuthController;
-use Faker\Provider\Payment;
+use App\Http\Controllers\PaymentController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
@@ -20,5 +20,5 @@ Route::middleware('auth:sanctum')->prefix('auth')->group(function () {
 });
 
 Route::group(['middleware' => 'auth:sanctum'], function () {
-    Route::post('pay', [Payment::class, 'pay']);
+    Route::post('pay', [PaymentController::class, 'pay']);
 });

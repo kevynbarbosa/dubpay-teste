@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Services\Payment;
+namespace App\DTO;
 
 final class ProviderPaymentResponseDTO
 {
@@ -13,7 +13,7 @@ final class ProviderPaymentResponseDTO
     {
         return new self(
             status: $data['status'],
-            transactionId: $data['transaction_id'] ?? $data['transactionId'],
+            transactionId: $data['transaction_id'] ?? $data['transactionId'] ?? $data['paymentId'],
         );
     }
 }

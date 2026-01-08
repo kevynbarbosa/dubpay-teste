@@ -1,11 +1,11 @@
 <?php
 
-namespace App\Services\Payment;
+namespace App\DTO;
 
 final class ProviderPaymentPayloadDTO
 {
     public function __construct(
-        public float $transactionId,
+        public string $transactionId,
         public float $amount,
         public string $currency,
     ) {}

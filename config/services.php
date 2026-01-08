@@ -35,4 +35,15 @@ return [
         ],
     ],
 
+    'provider_a' => [
+        'base_url' => env('PROVIDERA_BASE_URL'),
+        'api_key' => env('PROVIDERA_API_KEY'),
+    ],
+
+    'provider_b' => [
+        'base_url' => env('PROVIDERB_BASE_URL'),
+        'user' => env('PROVIDERB_USER'),
+        'password' => env('PROVIDERB_PASSWORD'),
+    ],
+
 ];

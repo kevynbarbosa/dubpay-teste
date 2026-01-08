@@ -14,7 +14,6 @@ return new class extends Migration
         Schema::create('transactions', function (Blueprint $table) {
             $table->uuid('id')->primary();
             $table->string('provider');
-            $table->string('provider_transaction_id');
             $table->decimal('amount', 10, 2);
             $table->string('currency', 3);
             $table->string('status');
