@@ -59,6 +59,10 @@ touch database/database.sqlite
 
 Base: `http://localhost:8000/api`
 
+### Postman
+
+Use a colecao na raiz do projeto: `DubPayTeste.postman_collection.json`.
+
 ### Auth
 
 -   `POST /auth/register` registra um novo usuario e retorna token.

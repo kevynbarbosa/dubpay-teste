@@ -1,0 +1,138 @@
+{
+	"info": {
+		"_postman_id": "fb0ce9ad-3507-4535-b185-329c476f0c1f",
+		"name": "DubPayTeste",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "10887798"
+	},
+	"item": [
+		{
+			"name": "login",
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Accept",
+						"value": "application/json",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"email\": \"test@example.com\",\r\n    \"password\": \"password\"\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://localhost/api/auth/login",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"path": [
+						"api",
+						"auth",
+						"login"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "pay",
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "1|wApRZzdAjuiLo3Mwjlt8xTIXGmLD8ejJlbGuY4nM594c58f9",
+							"type": "string"
+						}
+					]
+				},
+				"method": "POST",
+				"header": [
+					{
+						"key": "Accept",
+						"value": "application/json",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"amount\": 107.52,\r\n    \"currency\": \"EUR\",\r\n    \"provider\": \"ProviderA\"\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "localhost/api/pay",
+					"host": [
+						"localhost"
+					],
+					"path": [
+						"api",
+						"pay"
+					],
+					"query": [
+						{
+							"key": "",
+							"value": null,
+							"disabled": true
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "webhookA",
+			"request": {
+				"auth": {
+					"type": "noauth"
+				},
+				"method": "POST",
+				"header": [
+					{
+						"key": "Accept",
+						"value": "application/json",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "// {\r\n//     \"transaction_id\": \"019b9e68-c3ba-7279-9188-5604ab51037c\",\r\n//     \"type\": \"pending\",\r\n//     \"date_created\": \"2026-01-08 10:00:00\"\r\n// }\r\n\r\n// {\r\n//     \"transaction_id\": \"019b9e68-c3ba-7279-9188-5604ab51037c\",\r\n//     \"type\": \"failed\",\r\n//     \"date_created\": \"2026-01-08 09:00:00\"\r\n// }\r\n\r\n// {\r\n//     \"transaction_id\": \"019b9e68-c3ba-7279-9188-5604ab51037c\",\r\n//     \"type\": \"completed\",\r\n//     \"date_created\": \"2026-01-08 11:00:00\"\r\n// }",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "localhost/api/handle-provider-a-webhook",
+					"host": [
+						"localhost"
+					],
+					"path": [
+						"api",
+						"handle-provider-a-webhook"
+					],
+					"query": [
+						{
+							"key": "",
+							"value": null,
+							"disabled": true
+						}
+					]
+				}
+			},
+			"response": []
+		}
+	]
+}
