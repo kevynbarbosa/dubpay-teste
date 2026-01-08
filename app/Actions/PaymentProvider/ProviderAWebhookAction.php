@@ -22,10 +22,6 @@ class ProviderAWebhookAction
                 ->where('transaction_id', $transactionId)
                 ->max('date_created');
 
-            if ($latestDateCreated && $dateCreated <= $latestDateCreated) {
-                return;
-            }
-
             $alreadyProcessed = WebhookEvent::where('provider', 'ProviderA')
                 ->where('transaction_id', $transactionId)
                 ->where('payload_hash', $payloadHash)
@@ -35,10 +31,6 @@ class ProviderAWebhookAction
                 return;
             }
 
-            Transaction::find($transactionId)->update([
-                'status' => $type,
-            ]);
-
             WebhookEvent::create([
                 'provider' => 'ProviderA',
                 'transaction_id' => $transactionId,
@@ -46,6 +38,14 @@ class ProviderAWebhookAction
                 'date_created' => $dateCreated,
                 'payload_hash' => $payloadHash,
                 'payload' => $data,
+            ]);
+
+            if ($latestDateCreated && $dateCreated <= $latestDateCreated) {
+                return;
+            }
+
+            Transaction::find($transactionId)->update([
+                'status' => $type,
             ]);
         } catch (\Throwable $th) {
             Log::error('ProviderA webhook processing failed.', [
