@@ -23,7 +23,8 @@ class ProviderBWebhookRequest extends FormRequest
     {
         return [
             'transaction_id' => ['required', 'string'],
-            'message' => ['required', 'string'],
+            'type' => ['required', 'string'],
+            'date_created' => ['required', 'date'],
         ];
     }
 }
