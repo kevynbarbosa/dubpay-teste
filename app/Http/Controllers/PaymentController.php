@@ -46,7 +46,6 @@ class PaymentController extends Controller
 
             (new ProviderBWebhookAction())->execute($data);
         } catch (\Throwable $th) {
-            throw $th;
             return response()->json(['error' => 'Error processing webhook'], 500);
         }
     }
